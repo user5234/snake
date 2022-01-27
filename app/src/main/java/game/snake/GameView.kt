@@ -99,7 +99,7 @@ class GameView : View {
         apples.initialize(applesAmount)
         snake.initialize(speed)
         gameOver = false
-        startTimer()
+        frameNumber = 0
     }
 
     private fun startTimer() {
@@ -174,7 +174,12 @@ class GameView : View {
                     //swipe up
                     touchY - e.y > width / 15F -> changeDirection(Snake.Direction.UP)
                     //swipe right
-                    e.x - touchX > width / 15F -> changeDirection(Snake.Direction.RIGHT)
+                    e.x - touchX > width / 15F -> {
+                        if (!timerIsOn) {
+                            startTimer()
+                        }
+                        changeDirection(Snake.Direction.RIGHT)
+                    }
                     //swipe down
                     e.y - touchY > width / 15F -> changeDirection(Snake.Direction.DOWN)
                 }
