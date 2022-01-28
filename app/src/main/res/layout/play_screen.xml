@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#8000">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/middleView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1.3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.9">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/play_screen_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:shapeAppearanceOverlay="@style/round_corners" />
+
+        <ImageView
+            android:id="@+id/scoreImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="6dp"
+            android:src="@drawable/score_donut"
+            app:layout_constraintBottom_toTopOf="@+id/scoreText2"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintEnd_toEndOf="@+id/scoreText2"
+            app:layout_constraintStart_toStartOf="@+id/scoreText2"
+            app:layout_constraintWidth_percent="0.15" />
+
+        <TextView
+            android:id="@+id/scoreText2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arcade_font"
+            android:gravity="center"
+            android:text="0"
+            android:textSize="30sp"
+            android:textColor="#222"
+            app:layout_constraintWidth_percent="0.2"
+            app:layout_constraintBottom_toTopOf="@+id/guideline3"
+            app:layout_constraintStart_toStartOf="@+id/playAgainButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.6" />
+
+        <ImageView
+            android:id="@+id/highScoreImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/victory_cup"
+            app:layout_constraintBottom_toTopOf="@+id/highScoreText2"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintEnd_toEndOf="@+id/highScoreText2"
+            app:layout_constraintStart_toStartOf="@+id/highScoreText2"
+            app:layout_constraintWidth_percent="0.15" />
+
+        <TextView
+            android:id="@+id/highScoreText2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arcade_font"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="#222"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline3"
+            app:layout_constraintEnd_toEndOf="@+id/settingsButton"
+            app:layout_constraintStart_toStartOf="@+id/settingsButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.6"
+            app:layout_constraintWidth_percent="0.2" />
+
+        <game.snake.ThemeButton
+            android:id="@+id/settingsButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#0000"
+            android:elevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="@+id/guideline3"
+            app:layout_constraintWidth_percent="0.2256" />
+
+        <game.snake.ThemeButton
+            android:id="@+id/playAgainButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#0000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="2.66"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline3"
+            app:layout_constraintWidth_percent="0.6" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.69" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

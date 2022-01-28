@@ -5,6 +5,7 @@
     android:foregroundTint="#673AB7"
     android:id="@+id/mainLayout">
 
+    <!--the deep purple layout at the top that contains the score and high score-->
     <RelativeLayout
         android:id="@+id/topLayout"
         android:layout_width="match_parent"
@@ -66,6 +67,7 @@
 
     </RelativeLayout>
 
+    <!--the actual view on which the game is actually played-->
     <game.snake.GameView
         android:id="@+id/snakeView"
         android:layout_width="match_parent"

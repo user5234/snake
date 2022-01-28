@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ThemeButton">
+        <attr name="android:text"/>
+        <attr name="android:drawable"/>
+        <attr name="mainColor" format="color"/>
+        <attr name="shadowColor" format="color"/>
+        <attr name="highlightColor" format="color"/>
+        <attr name="baseColor" format="color"/>
+        <attr name="android:textColor" />
+    </declare-styleable>
+</resources>
