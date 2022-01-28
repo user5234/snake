@@ -28,6 +28,7 @@ class GameView : View {
                 get() = 120
         },
         NORMAL {
+            //comment
             override val squaresAmount: Int
                 get() = 252
         },
