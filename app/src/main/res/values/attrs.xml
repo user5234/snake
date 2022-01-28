@@ -7,6 +7,7 @@
         <attr name="shadowColor" format="color"/>
         <attr name="highlightColor" format="color"/>
         <attr name="baseColor" format="color"/>
-        <attr name="android:textColor" />
+        <attr name="foregroundColorPrimary" format="color"/>
+        <attr name="foregroundColorSecondary" format="color"/>
     </declare-styleable>
 </resources>

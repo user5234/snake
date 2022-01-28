@@ -14,5 +14,6 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
         instance = this
         setContentView(R.layout.activity_main)
+        layoutInflater.inflate(R.layout.play_screen, findViewById(R.id.mainLayout))
     }
 }
