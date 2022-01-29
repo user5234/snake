@@ -23,6 +23,23 @@ class OptionsRecyclerView : RecyclerView {
             val recyclerViewLayoutManager = RecyclerViewLayoutManager(context, this)
             recyclerViewLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
             this.layoutManager = recyclerViewLayoutManager
+
+            for (i in items.indices) {
+                when (val option = items[i].option) {
+                    is GameView.MapSize -> if (option == MainActivity.instance.getLast<GameView.MapSize>()) {
+                        smoothScrollToPosition(i)
+                        println(option)
+                    }
+                    is GameView.Speed -> if (option == MainActivity.instance.getLast<GameView.Speed>()) {
+                        smoothScrollToPosition(i)
+                        println(option)
+                    }
+                    is GameView.ApplesAmount -> if (option == MainActivity.instance.getLast<GameView.ApplesAmount>()) {
+                        smoothScrollToPosition(i)
+                        println(option)
+                    }
+                }
+            }
         }
 
     private var position = 0
@@ -38,7 +55,6 @@ class OptionsRecyclerView : RecyclerView {
             val parent = parent
             if (parent is View)
                 setPadding(parent.width / 2 - height / 2, 0, parent.width / 2 - height / 2, 0)
-            smoothScrollToPosition(0)
         }
     }
 
