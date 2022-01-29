@@ -52,7 +52,7 @@ class PlayScreen : ConstraintLayout {
     fun add() {
         postDelayed( {
             findViewById<ThemeButton>(R.id.playButton).text = "PLAY  AGAIN"
-            (context as MainActivity).findViewById<ViewGroup>(R.id.mainLayout).addView(this)
+            MainActivity.instance.findViewById<ViewGroup>(R.id.mainLayout).addView(this)
             val alphaAnimation = AlphaAnimation(0F, 1F)
             val scaleAnimation = ScaleAnimation(0F, 1F, 0F, 1F, Animation.RELATIVE_TO_SELF, 0.5F, Animation.RELATIVE_TO_SELF, 0.5F)
             scaleAnimation.interpolator = PathInterpolatorCompat.create(0.725F, 0F, 0.195F, 1.460F)
@@ -83,11 +83,11 @@ class PlayScreen : ConstraintLayout {
 
     private fun addOptionsMenu() {
         findViewById<ViewGroup>(R.id.playView).addView(optionsMenu)
-        val alphaAnimation = AlphaAnimation(0F, 1F);
-        alphaAnimation.startOffset = 100;
-        alphaAnimation.duration = 100;
-        alphaAnimation.fillAfter = true;
-        optionsMenu.startAnimation(alphaAnimation);
+        val alphaAnimation = AlphaAnimation(0F, 1F)
+        alphaAnimation.startOffset = 100
+        alphaAnimation.duration = 100
+        alphaAnimation.fillAfter = true
+        optionsMenu.startAnimation(alphaAnimation)
     }
 
     private fun removeOptionsMenu() {
@@ -96,11 +96,14 @@ class PlayScreen : ConstraintLayout {
         alphaAnimation.duration = 100
         alphaAnimation.fillAfter = true
         optionsMenu.startAnimation(alphaAnimation)
-        (context as MainActivity).findViewById<GameView>(R.id.gameView).newGame(
-            findViewById<OptionsRecyclerView>(R.id.mapSizeRecyclerView).getSelectedItem() as GameView.MapSize,
-            findViewById<OptionsRecyclerView>(R.id.speedRecycleView).getSelectedItem() as GameView.Speed,
-            findViewById<OptionsRecyclerView>(R.id.applesAmountRecyclerView).getSelectedItem() as GameView.ApplesAmount
-        )
+        //game values
+        val mapSize = findViewById<OptionsRecyclerView>(R.id.mapSizeRecyclerView).getSelectedItem() as GameView.MapSize
+        val speed = findViewById<OptionsRecyclerView>(R.id.speedRecycleView).getSelectedItem() as GameView.Speed
+        val applesAmount = findViewById<OptionsRecyclerView>(R.id.applesAmountRecyclerView).getSelectedItem() as GameView.ApplesAmount
+        //creating a new game
+        MainActivity.instance.findViewById<GameView>(R.id.gameView).newGame(mapSize, speed, applesAmount)
+        MainActivity.instance.saveLast(mapSize, speed, applesAmount)
+        //removing the options menu
         findViewById<ViewGroup>(R.id.playView).removeView(optionsMenu)
     }
 }

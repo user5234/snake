@@ -106,7 +106,7 @@ class GameView : View {
 
     init {
         doOnLayout {
-            newGame(MapSize.NORMAL, Speed.NORMAL, ApplesAmount.FIVE)
+            newGame(MainActivity.instance.getLast(), MainActivity.instance.getLast(), MainActivity.instance.getLast())
         }
     }
 
