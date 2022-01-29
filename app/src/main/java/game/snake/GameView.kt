@@ -22,7 +22,12 @@ private const val FPS = 30F
  */
 class GameView : View {
 
-    enum class MapSize {
+    /**
+     * interface that represents an option / parameter for a new game
+     */
+    interface GameOption
+
+    enum class MapSize : GameOption {
         SMALL {
             override val squaresAmount: Int
                 get() = 120
@@ -36,7 +41,41 @@ class GameView : View {
                 get() = 350
         };
 
-        abstract val squaresAmount: Int
+        abstract val squaresAmount : Int
+    }
+
+    enum class Speed : GameOption {
+        SLOW {
+            override val moveTime: Long
+                get() = 220L
+        },
+        NORMAL {
+            override val moveTime: Long
+                get() = 180L
+        },
+        FAST {
+            override val moveTime: Long
+                get() = 140L
+        };
+
+        abstract val moveTime : Long
+    }
+
+    enum class ApplesAmount : GameOption {
+        ONE {
+            override val amount: Int
+                get() = 1
+        },
+        THREE {
+            override val amount: Int
+                get() = 3
+        },
+        FIVE{
+            override val amount: Int
+                get() = 5
+        };
+
+        abstract val amount : Int
     }
 
     var unitSize = 0
@@ -67,11 +106,11 @@ class GameView : View {
 
     init {
         doOnLayout {
-            newGame(MapSize.NORMAL, Snake.Speed.NORMAL, 5)
+            newGame(MapSize.NORMAL, Speed.NORMAL, ApplesAmount.FIVE)
         }
     }
 
-    fun newGame(mapSize: MapSize, speed: Snake.Speed, applesAmount: Int) {
+    fun newGame(mapSize: MapSize, speed: Speed, applesAmount: ApplesAmount) {
         fun findUnitSize(targetSquaresAmount: Int): Int {
             var unitSize: Int
             var y: Float
@@ -96,10 +135,11 @@ class GameView : View {
             val widthInSquares = width / unitSize - 2
             Point((i % widthInSquares + 1) * unitSize, i / widthInSquares * unitSize)
         }
-        apples.initialize(applesAmount)
+        apples.initialize(applesAmount.amount)
         snake.initialize(speed)
         gameOver = false
         frameNumber = 0
+        postInvalidate()
     }
 
     private fun startTimer() {

@@ -69,11 +69,11 @@
 
     <!--the actual view on which the game is actually played-->
     <game.snake.GameView
-        android:id="@+id/snakeView"
+        android:id="@+id/gameView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_below="@id/topLayout"
         android:layout_alignParentBottom="true"
-        android:background="#690b95"/>
+        android:background="#690b95" />
 
 </RelativeLayout>

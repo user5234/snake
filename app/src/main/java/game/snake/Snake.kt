@@ -45,23 +45,6 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
         abstract val opposite: Direction
     }
 
-    enum class Speed {
-        SLOW {
-            override val moveTime: Long
-                get() = 220L
-        },
-        NORMAL {
-            override val moveTime: Long
-                get() = 180L
-        },
-        FAST {
-            override val moveTime: Long
-                get() = 140L
-        };
-
-        abstract val moveTime: Long
-    }
-
     private val x = mutableListOf<Int>()
     private val y = mutableListOf<Int>()
     private val turns = mutableListOf<Point>()
@@ -88,7 +71,7 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
      * this method should always be called at the start of a new game,
      * after initializing all the variables needed in the GameView
      */
-    fun initialize(speed: Speed) {
+    fun initialize(speed: GameView.Speed) {
         //set the size variables to match the current Map Size
         u = gameView.unitSize
         distancePerFrame = u.toFloat() / gameView.framesPerMove
@@ -100,7 +83,7 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
         sweepGradients.clear()
         linearGradients.clear()
         //initialize the basic variables
-        moveTime = speed.moveTime
+        moveTime = speed.moveTime.toLong()
         direction = Direction.RIGHT
         prevDirection = Direction.RIGHT
         bodyParts = 4

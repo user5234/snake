@@ -100,11 +100,11 @@ class ThemeButton : View {
         paint.color = baseColor
         canvas.drawRoundRect(0F, height / 15f, width - 1F, height - 1F, height / 15f, height / 15f, paint)
         paint.color = shadowColor
-        canvas.drawRoundRect(width / 75F, height / 2F, 74 * width / 75F, 19 * height / 20F - 1, height / 15F, height / 15F, paint)
+        canvas.drawRoundRect(height / 30F, height / 2F, width - height / 30F, 19 * height / 20F - 1, height / 15F, height / 15F, paint)
         paint.color = highlightColor
-        canvas.drawRoundRect(width / 75F, buttonTop, 74 * width / 75F, buttonTopHeight + buttonTop, height / 15F, height / 15F, paint)
+        canvas.drawRoundRect(height / 30F, buttonTop, width - height / 30F, buttonTopHeight + buttonTop, height / 15F, height / 15F, paint)
         paint.color = mainColor
-        canvas.drawRoundRect(width / 75F, buttonTop + height / 50F, 74 * width / 75F, buttonTopHeight + buttonTop, height / 15F, height / 15F, paint)
+        canvas.drawRoundRect(height / 30F, buttonTop + height / 50F, width - height / 30F, buttonTopHeight + buttonTop, height / 15F, height / 15F, paint)
         paint.color = foregroundColorSecondary
         canvas.drawText(text, (width - paint.measureText(text)) / 2F, buttonTop + (buttonTopHeight - textHeight) / 2F + height / 90F, paint)
         paint.color = foregroundColorPrimary
@@ -126,6 +126,7 @@ class ThemeButton : View {
                 buttonTop = 0F
                 drawablePrimary?.setBounds((width / 8F).toInt(), (buttonTop + buttonTopHeight / 8F).toInt(), (7 * width / 8F).toInt(), (buttonTop + 7 * buttonTopHeight / 8F).toInt())
                 drawableSecondary?.setBounds((width / 8F).toInt(), (buttonTop + buttonTopHeight / 8F + height / 90F).toInt(), (7 * width / 8F).toInt(), (buttonTop + 7 * buttonTopHeight / 8F + height / 90F).toInt())
+                runnable?.run()
             }
         }
         postInvalidate()

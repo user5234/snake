@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<game.snake.PlayScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#8000">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/middleView"
+        android:id="@+id/playView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -25,19 +25,18 @@
             app:shapeAppearanceOverlay="@style/round_corners" />
 
         <ImageView
-            android:id="@+id/scoreImage"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:padding="6dp"
             android:src="@drawable/score_donut"
-            app:layout_constraintBottom_toTopOf="@+id/scoreText2"
+            app:layout_constraintBottom_toTopOf="@+id/playScreenScoreText"
             app:layout_constraintDimensionRatio="1"
-            app:layout_constraintEnd_toEndOf="@+id/scoreText2"
-            app:layout_constraintStart_toStartOf="@+id/scoreText2"
+            app:layout_constraintEnd_toEndOf="@+id/playScreenScoreText"
+            app:layout_constraintStart_toStartOf="@+id/playScreenScoreText"
             app:layout_constraintWidth_percent="0.15" />
 
         <TextView
-            android:id="@+id/scoreText2"
+            android:id="@+id/playScreenScoreText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/arcade_font"
@@ -47,23 +46,22 @@
             android:textColor="#222"
             app:layout_constraintWidth_percent="0.2"
             app:layout_constraintBottom_toTopOf="@+id/guideline3"
-            app:layout_constraintStart_toStartOf="@+id/playAgainButton"
+            app:layout_constraintStart_toStartOf="@+id/playButton"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.6" />
 
         <ImageView
-            android:id="@+id/highScoreImage"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:src="@drawable/victory_cup"
-            app:layout_constraintBottom_toTopOf="@+id/highScoreText2"
+            app:layout_constraintBottom_toTopOf="@+id/playScreenHighScoreText"
             app:layout_constraintDimensionRatio="1"
-            app:layout_constraintEnd_toEndOf="@+id/highScoreText2"
-            app:layout_constraintStart_toStartOf="@+id/highScoreText2"
+            app:layout_constraintEnd_toEndOf="@+id/playScreenHighScoreText"
+            app:layout_constraintStart_toStartOf="@+id/playScreenHighScoreText"
             app:layout_constraintWidth_percent="0.15" />
 
         <TextView
-            android:id="@+id/highScoreText2"
+            android:id="@+id/playScreenHighScoreText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/arcade_font"
@@ -95,10 +93,10 @@
             app:layout_constraintWidth_percent="0.2256" />
 
         <game.snake.ThemeButton
-            android:id="@+id/playAgainButton"
+            android:id="@+id/playButton"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:text="PLAY  AGAIN"
+            android:text="START GAME"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="2.66"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
@@ -122,4 +120,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</game.snake.PlayScreen>
