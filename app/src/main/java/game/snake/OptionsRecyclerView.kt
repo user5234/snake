@@ -24,22 +24,7 @@ class OptionsRecyclerView : RecyclerView {
             recyclerViewLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
             this.layoutManager = recyclerViewLayoutManager
 
-            for (i in items.indices) {
-                when (val option = items[i].option) {
-                    is GameView.MapSize -> if (option == MainActivity.instance.getLast<GameView.MapSize>()) {
-                        smoothScrollToPosition(i)
-                        println(option)
-                    }
-                    is GameView.Speed -> if (option == MainActivity.instance.getLast<GameView.Speed>()) {
-                        smoothScrollToPosition(i)
-                        println(option)
-                    }
-                    is GameView.ApplesAmount -> if (option == MainActivity.instance.getLast<GameView.ApplesAmount>()) {
-                        smoothScrollToPosition(i)
-                        println(option)
-                    }
-                }
-            }
+            scrollToInitOptions()
         }
 
     private var position = 0
@@ -63,6 +48,25 @@ class OptionsRecyclerView : RecyclerView {
     fun itemSelected(position : Int) { this.position = position; }
 
     fun getSelectedItem(): GameView.GameOption = items[position].option
+
+    private fun scrollToInitOptions() {
+        for (i in items.indices) {
+            when (val option = items[i].option) {
+                is GameView.MapSize -> if (option == MainActivity.instance.getLast<GameView.MapSize>()) {
+                    smoothScrollToPosition(i)
+                    println(option)
+                }
+                is GameView.Speed -> if (option == MainActivity.instance.getLast<GameView.Speed>()) {
+                    smoothScrollToPosition(i)
+                    println(option)
+                }
+                is GameView.ApplesAmount -> if (option == MainActivity.instance.getLast<GameView.ApplesAmount>()) {
+                    smoothScrollToPosition(i)
+                    println(option)
+                }
+            }
+        }
+    }
 
     class Item (@DrawableRes val imageRes : Int, val option: GameView.GameOption)
 }
