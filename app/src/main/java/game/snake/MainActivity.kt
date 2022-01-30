@@ -25,6 +25,16 @@ class MainActivity : AppCompatActivity() {
         layoutInflater.inflate(R.layout.play_screen, findViewById(R.id.mainLayout))
     }
 
+    override fun onPause() {
+        super.onPause()
+        findViewById<GameView>(R.id.gameView).pause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        findViewById<GameView>(R.id.gameView).resume()
+    }
+
     fun saveLast(vararg options : GameView.GameOption) {
         val preferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE)
         val editor = preferences.edit()

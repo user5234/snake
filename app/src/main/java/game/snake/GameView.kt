@@ -8,6 +8,7 @@ import android.graphics.Point
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.widget.TextView
 import androidx.core.view.doOnLayout
 import java.util.*
 import kotlin.concurrent.thread
@@ -78,9 +79,8 @@ class GameView : View {
         abstract val amount : Int
     }
 
-    var unitSize = 0
-    var framesPerMove = 0
-    var score = 0
+    var unitSize = 0; private set
+    var framesPerMove = 0; private set
     var emptySquares = mutableListOf<Point>(); private set
 
     private val apples = Apples(this)
@@ -88,10 +88,9 @@ class GameView : View {
 
     private var timer = Timer()
     private var frameNumber = 0
+    private var score = 0
     private var moveTime = 0L
     private var changedDirection = false //to have only one direction change per move
-    private var paused = false
-    private var timerIsOn = false
     private var gameOver = false
     private var won = false
 
@@ -139,27 +138,8 @@ class GameView : View {
         snake.initialize(speed)
         gameOver = false
         frameNumber = 0
+        score = 0
         postInvalidate()
-    }
-
-    private fun startTimer() {
-        frameNumber = 0
-        timerIsOn = true
-        thread {
-            timer = Timer()
-            timer.scheduleAtFixedRate( object : TimerTask() {
-                override fun run() {
-                    frameNumber++
-                    if (frameNumber == framesPerMove) {
-                        frameNumber = 0
-                        changedDirection = false
-                        emptySquares = allSquares.toMutableList()
-                        snake.move()
-                    }
-                    postInvalidate()
-                }
-            }, moveTime / framesPerMove, moveTime / framesPerMove)
-        }
     }
 
     fun gameOver(won: Boolean) {
@@ -178,6 +158,34 @@ class GameView : View {
                 postInvalidate()
             }
         }, moveTime / framesPerMove, moveTime / framesPerMove)
+    }
+
+    fun incrementScore() {
+        score++
+        post { (parent as View).findViewById<TextView>(R.id.scoreText).text = "$score" }
+    }
+
+    fun pause() { if (!gameOver) timer.cancel() }
+
+    fun resume() { if (!gameOver) timer.cancel() }
+
+    private fun startTimer() {
+        frameNumber = 0
+        thread {
+            timer = Timer()
+            timer.scheduleAtFixedRate( object : TimerTask() {
+                override fun run() {
+                    frameNumber++
+                    if (frameNumber == framesPerMove) {
+                        frameNumber = 0
+                        changedDirection = false
+                        emptySquares = allSquares.toMutableList()
+                        snake.move()
+                    }
+                    postInvalidate()
+                }
+            }, moveTime / framesPerMove, moveTime / framesPerMove)
+        }
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -215,7 +223,7 @@ class GameView : View {
                     touchY - e.y > width / 15F -> changeDirection(Snake.Direction.UP)
                     //swipe right
                     e.x - touchX > width / 15F -> {
-                        if (!timerIsOn) {
+                        if (!gameOver) {
                             startTimer()
                         }
                         changeDirection(Snake.Direction.RIGHT)

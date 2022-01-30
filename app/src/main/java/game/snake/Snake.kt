@@ -83,7 +83,7 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
         sweepGradients.clear()
         linearGradients.clear()
         //initialize the basic variables
-        moveTime = speed.moveTime.toLong()
+        moveTime = speed.moveTime
         direction = Direction.RIGHT
         prevDirection = Direction.RIGHT
         bodyParts = 4
@@ -161,6 +161,7 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
                 ateApple = true
                 bodyParts++
                 textTime = 6
+                gameView.incrementScore()
                 x.add(0); y.add(0)
             }
         //add the turns to the turns list after moving
