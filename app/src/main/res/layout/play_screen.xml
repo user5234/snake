@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <game.snake.PlayScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/playScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#8000">
+    android:background="#8000"
+    android:clickable="true"
+    android:focusable="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/playView"

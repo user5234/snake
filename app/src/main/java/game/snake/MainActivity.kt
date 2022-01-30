@@ -48,6 +48,18 @@ class MainActivity : AppCompatActivity() {
         editor.apply()
     }
 
+    fun saveHighScore(score: Int) {
+        val preferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE)
+        val editor = preferences.edit()
+        editor.putInt(SNAKE_HIGH_SCORE, score)
+        editor.apply()
+    }
+
+    fun getHighScore() : Int {
+        val preferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE)
+        return preferences.getInt(SNAKE_HIGH_SCORE, 0)
+    }
+
     inline fun <reified T : GameView.GameOption> getLast() : T {
         return getLast(T::class)
     }

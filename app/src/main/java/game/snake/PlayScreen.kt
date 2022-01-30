@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.animation.PathInterpolatorCompat
 import androidx.core.view.doOnLayout
@@ -26,7 +27,7 @@ class PlayScreen : ConstraintLayout {
         doOnLayout {
             optionsMenu = LayoutInflater.from(context).inflate(R.layout.options_menu, findViewById(R.id.playView), false)
             //buttons in the play screen
-            findViewById<ThemeButton>(R.id.playButton).runnable = Runnable { remove() }
+            findViewById<ThemeButton>(R.id.playButton).runnable = Runnable { removeScreen() }
             findViewById<ThemeButton>(R.id.settingsButton).runnable = Runnable { addOptionsMenu() }
             //recycler views in the options menu
             optionsMenu.findViewById<OptionsRecyclerView>(R.id.speedRecycleView).items = listOf(
@@ -46,26 +47,37 @@ class PlayScreen : ConstraintLayout {
             )
             //button in the options menu
             optionsMenu.findViewById<ThemeButton>(R.id.applySettingsButton).runnable = Runnable { removeOptionsMenu() }
+            //high score
+            findViewById<TextView>(R.id.playScreenHighScoreText).text = "${MainActivity.instance.getHighScore()}"
         }
     }
 
-    fun add() {
-        postDelayed( {
-            findViewById<ThemeButton>(R.id.playButton).text = "PLAY  AGAIN"
-            MainActivity.instance.findViewById<ViewGroup>(R.id.mainLayout).addView(this)
-            val alphaAnimation = AlphaAnimation(0F, 1F)
-            val scaleAnimation = ScaleAnimation(0F, 1F, 0F, 1F, Animation.RELATIVE_TO_SELF, 0.5F, Animation.RELATIVE_TO_SELF, 0.5F)
-            scaleAnimation.interpolator = PathInterpolatorCompat.create(0.725F, 0F, 0.195F, 1.460F)
-            alphaAnimation.fillAfter = true
-            alphaAnimation.duration = 500
-            scaleAnimation.fillAfter = true
-            scaleAnimation.duration = 500
-            startAnimation(alphaAnimation)
-            findViewById<View>(R.id.playView).startAnimation(scaleAnimation)
-        } , 1000)
+    /**
+     * adds the view to the main layout
+     *
+     * only call this method from the UI thread
+     */
+    fun addScreen(score : Int, highScore : Int, buttonText : String = "PLAY  AGAIN") {
+        //when adding the screen manually (The second time and subsequent) set the text of the button to the text given
+        findViewById<ThemeButton>(R.id.playButton).text = buttonText
+        //every time the view is added get the high score in case it changed
+        findViewById<TextView>(R.id.playScreenHighScoreText).text = "$highScore"
+        //setting the text of the score textView
+        findViewById<TextView>(R.id.playScreenScoreText).text = "$score"
+        //adding and animating this view to the main layout
+        MainActivity.instance.findViewById<ViewGroup>(R.id.mainLayout).addView(this)
+        val alphaAnimation = AlphaAnimation(0F, 1F)
+        val scaleAnimation = ScaleAnimation(0F, 1F, 0F, 1F, Animation.RELATIVE_TO_SELF, 0.5F, Animation.RELATIVE_TO_SELF, 0.5F)
+        scaleAnimation.interpolator = PathInterpolatorCompat.create(0.725F, 0F, 0.195F, 1.460F)
+        alphaAnimation.fillAfter = true
+        alphaAnimation.duration = 500
+        scaleAnimation.fillAfter = true
+        scaleAnimation.duration = 500
+        startAnimation(alphaAnimation)
+        findViewById<View>(R.id.playView).startAnimation(scaleAnimation)
     }
 
-    private fun remove() {
+    private fun removeScreen() {
         post {
             val alphaAnimation = AlphaAnimation(1F, 0F)
             alphaAnimation.duration = 500
@@ -77,6 +89,7 @@ class PlayScreen : ConstraintLayout {
             scaleAnimation.fillAfter = true
             startAnimation(alphaAnimation)
             findViewById<View>(R.id.playView).startAnimation(scaleAnimation)
+            MainActivity.instance.findViewById<GameView>(R.id.gameView).newGame()
             (parent as ViewGroup).removeView(this)
         }
     }

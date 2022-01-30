@@ -71,7 +71,7 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
      * this method should always be called at the start of a new game,
      * after initializing all the variables needed in the GameView
      */
-    fun initialize(speed: GameView.Speed) {
+    fun initialize(moveTime : Long) {
         //set the size variables to match the current Map Size
         u = gameView.unitSize
         distancePerFrame = u.toFloat() / gameView.framesPerMove
@@ -83,7 +83,7 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
         sweepGradients.clear()
         linearGradients.clear()
         //initialize the basic variables
-        moveTime = speed.moveTime
+        this.moveTime = moveTime
         direction = Direction.RIGHT
         prevDirection = Direction.RIGHT
         bodyParts = 4

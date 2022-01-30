@@ -89,13 +89,16 @@ class GameView : View {
     private var timer = Timer()
     private var frameNumber = 0
     private var score = 0
+    private var applesAmount = 0
     private var moveTime = 0L
     private var changedDirection = false //to have only one direction change per move
     private var gameOver = false
+    private var running = false
     private var won = false
 
     private lateinit var bgBitmap : Bitmap
     private lateinit var allSquares : Array<Point>
+    private lateinit var playScreen: PlayScreen
 
     constructor(ctx: Context) : super(ctx)
 
@@ -105,7 +108,9 @@ class GameView : View {
 
     init {
         doOnLayout {
-            newGame(MainActivity.instance.getLast(), MainActivity.instance.getLast(), MainActivity.instance.getLast())
+            val ma = MainActivity.instance
+            playScreen = ma.findViewById(R.id.playScreen)
+            newGame(ma.getLast(), ma.getLast(), ma.getLast())
         }
     }
 
@@ -125,21 +130,11 @@ class GameView : View {
                 unitSize = (width / (x - 1)).toInt()
             return unitSize
         }
-        moveTime = speed.moveTime
-        unitSize = findUnitSize(mapSize.squaresAmount)
-        framesPerMove = (FPS * moveTime / 1000F).toInt()
-        bgBitmap = Background.get(width, height, unitSize)
-        allSquares = Array((width / unitSize - 2) * (height / unitSize - 1)) {
-            i ->
-            val widthInSquares = width / unitSize - 2
-            Point((i % widthInSquares + 1) * unitSize, i / widthInSquares * unitSize)
-        }
-        apples.initialize(applesAmount.amount)
-        snake.initialize(speed)
-        gameOver = false
-        frameNumber = 0
-        score = 0
-        postInvalidate()
+        newGame(findUnitSize(mapSize.squaresAmount), speed.moveTime, applesAmount.amount)
+    }
+
+    fun newGame() {
+        newGame(unitSize, moveTime, applesAmount)
     }
 
     fun gameOver(won: Boolean) {
@@ -158,6 +153,9 @@ class GameView : View {
                 postInvalidate()
             }
         }, moveTime / framesPerMove, moveTime / framesPerMove)
+        postDelayed({
+            playScreen.addScreen(score, MainActivity.instance.getHighScore())
+        }, 1000)
     }
 
     fun incrementScore() {
@@ -168,6 +166,27 @@ class GameView : View {
     fun pause() { if (!gameOver) timer.cancel() }
 
     fun resume() { if (!gameOver) timer.cancel() }
+
+    private fun newGame(unitSize : Int, moveTime : Long, applesAmount: Int) {
+        this.moveTime = moveTime
+        this.unitSize = unitSize
+        this.applesAmount = applesAmount
+        framesPerMove = (FPS * moveTime / 1000F).toInt()
+        bgBitmap = Background.get(width, height, unitSize)
+        allSquares = Array((width / unitSize - 2) * (height / unitSize - 1)) {
+                i ->
+            val widthInSquares = width / unitSize - 2
+            Point((i % widthInSquares + 1) * unitSize, i / widthInSquares * unitSize)
+        }
+        apples.initialize(applesAmount)
+        snake.initialize(moveTime)
+        timer.cancel()
+        gameOver = false
+        running = false
+        frameNumber = 0
+        score = 0
+        postInvalidate()
+    }
 
     private fun startTimer() {
         frameNumber = 0
@@ -223,8 +242,9 @@ class GameView : View {
                     touchY - e.y > width / 15F -> changeDirection(Snake.Direction.UP)
                     //swipe right
                     e.x - touchX > width / 15F -> {
-                        if (!gameOver) {
+                        if (!running) {
                             startTimer()
+                            running = true
                         }
                         changeDirection(Snake.Direction.RIGHT)
                     }
