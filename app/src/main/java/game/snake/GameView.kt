@@ -92,7 +92,7 @@ class GameView : View {
     private var applesAmount = 0
     private var moveTime = 0L
     private var changedDirection = false //to have only one direction change per move
-    private var gameOver = false
+    private var gameOver = true
     private var running = false
     private var won = false
 
@@ -133,7 +133,7 @@ class GameView : View {
         newGame(findUnitSize(mapSize.squaresAmount), speed.moveTime, applesAmount.amount)
     }
 
-    fun newGame() {
+    fun resetGame() {
         newGame(unitSize, moveTime, applesAmount)
     }
 
@@ -141,6 +141,12 @@ class GameView : View {
         timer.cancel()
         this.won = won
         this.gameOver = true
+        running = false
+        //adding the play screen
+        postDelayed({ playScreen.addScreen(score, MainActivity.instance.getHighScore()) }, 1000)
+        //saving the high score if higher than the previous
+        if (score > MainActivity.instance.getHighScore()) MainActivity.instance.saveHighScore(score)
+        //if we won don't do the
         if (won) return
         frameNumber = framesPerMove
         timer = Timer()
@@ -153,9 +159,6 @@ class GameView : View {
                 postInvalidate()
             }
         }, moveTime / framesPerMove, moveTime / framesPerMove)
-        postDelayed({
-            playScreen.addScreen(score, MainActivity.instance.getHighScore())
-        }, 1000)
     }
 
     fun incrementScore() {
@@ -163,9 +166,9 @@ class GameView : View {
         post { (parent as View).findViewById<TextView>(R.id.scoreText).text = "$score" }
     }
 
-    fun pause() { if (!gameOver) timer.cancel() }
+    fun pause() { if (running) timer.cancel() }
 
-    fun resume() { if (!gameOver) timer.cancel() }
+    fun resume() { if (running) startTimer() }
 
     private fun newGame(unitSize : Int, moveTime : Long, applesAmount: Int) {
         this.moveTime = moveTime
@@ -189,6 +192,7 @@ class GameView : View {
     }
 
     private fun startTimer() {
+        running = true
         frameNumber = 0
         thread {
             timer = Timer()
@@ -223,7 +227,7 @@ class GameView : View {
         if (e == null || gameOver)
             return true
         fun changeDirection(direction : Snake.Direction) {
-            if (!changedDirection && snake.setDirection(direction, frameNumber)) {
+            if (!changedDirection && running && snake.setDirection(direction, frameNumber)) {
                 changedDirection = true
             }
             touchX = e.x
@@ -242,10 +246,7 @@ class GameView : View {
                     touchY - e.y > width / 15F -> changeDirection(Snake.Direction.UP)
                     //swipe right
                     e.x - touchX > width / 15F -> {
-                        if (!running) {
-                            startTimer()
-                            running = true
-                        }
+                        if (!running) startTimer()
                         changeDirection(Snake.Direction.RIGHT)
                     }
                     //swipe down

@@ -89,7 +89,7 @@ class PlayScreen : ConstraintLayout {
             scaleAnimation.fillAfter = true
             startAnimation(alphaAnimation)
             findViewById<View>(R.id.playView).startAnimation(scaleAnimation)
-            MainActivity.instance.findViewById<GameView>(R.id.gameView).newGame()
+            MainActivity.instance.findViewById<GameView>(R.id.gameView).resetGame()
             (parent as ViewGroup).removeView(this)
         }
     }
