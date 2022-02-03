@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.doOnLayout
 import java.util.*
-import kotlin.concurrent.thread
 
 private const val FPS = 30F
 
@@ -92,7 +91,7 @@ class GameView : View {
     private var applesAmount = 0
     private var moveTime = 0L
     private var changedDirection = false //to have only one direction change per move
-    private var gameOver = true
+    private var gameOver = false
     private var running = false
     private var won = false
 
@@ -156,7 +155,7 @@ class GameView : View {
                 if (frameNumber == -1) {
                     frameNumber++
                 }
-                postInvalidate()
+                invalidate()
             }
         }, moveTime / framesPerMove, moveTime / framesPerMove)
     }
@@ -181,34 +180,33 @@ class GameView : View {
             val widthInSquares = width / unitSize - 2
             Point((i % widthInSquares + 1) * unitSize, i / widthInSquares * unitSize)
         }
-        apples.initialize(applesAmount)
-        snake.initialize(moveTime)
         timer.cancel()
         gameOver = false
         running = false
         frameNumber = 0
         score = 0
+        apples.initialize(applesAmount)
+        snake.initialize(moveTime)
         postInvalidate()
     }
 
     private fun startTimer() {
         running = true
         frameNumber = 0
-        thread {
-            timer = Timer()
-            timer.scheduleAtFixedRate( object : TimerTask() {
-                override fun run() {
-                    frameNumber++
-                    if (frameNumber == framesPerMove) {
-                        frameNumber = 0
-                        changedDirection = false
-                        emptySquares = allSquares.toMutableList()
-                        snake.move()
-                    }
-                    postInvalidate()
+        snake.setDirection(Snake.Direction.RIGHT, 0)
+        timer = Timer()
+        timer.scheduleAtFixedRate( object : TimerTask() {
+            override fun run() {
+                frameNumber++
+                if (frameNumber == framesPerMove) {
+                    frameNumber = 0
+                    emptySquares = allSquares.toMutableList()
+                    snake.move()
+                    changedDirection = false
                 }
-            }, moveTime / framesPerMove, moveTime / framesPerMove)
-        }
+                invalidate()
+            }
+        }, moveTime / framesPerMove, moveTime / framesPerMove)
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -227,8 +225,10 @@ class GameView : View {
         if (e == null || gameOver)
             return true
         fun changeDirection(direction : Snake.Direction) {
-            if (!changedDirection && running && snake.setDirection(direction, frameNumber)) {
-                changedDirection = true
+            if (!changedDirection && running) {
+                if (snake.setDirection(direction, frameNumber)) {
+                    changedDirection = true
+                }
             }
             touchX = e.x
             touchY = e.y
