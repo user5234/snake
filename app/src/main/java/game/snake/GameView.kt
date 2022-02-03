@@ -193,7 +193,6 @@ class GameView : View {
     private fun startTimer() {
         running = true
         frameNumber = 0
-        snake.setDirection(Snake.Direction.RIGHT, 0)
         timer = Timer()
         timer.scheduleAtFixedRate( object : TimerTask() {
             override fun run() {
@@ -212,6 +211,7 @@ class GameView : View {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         if (canvas != null) {
+            println(frameNumber)
             canvas.drawBitmap(bgBitmap, 0F, 0F, null)
             snake.draw(canvas, frameNumber)
             apples.draw(canvas)
@@ -225,10 +225,8 @@ class GameView : View {
         if (e == null || gameOver)
             return true
         fun changeDirection(direction : Snake.Direction) {
-            if (!changedDirection && running) {
-                if (snake.setDirection(direction, frameNumber)) {
-                    changedDirection = true
-                }
+            if (!changedDirection && running && snake.setDirection(direction, frameNumber)) {
+                changedDirection = true
             }
             touchX = e.x
             touchY = e.y
