@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.DrawableRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -16,7 +15,7 @@ class OptionsRecyclerView : RecyclerView {
         set(value) {
             field = value
             LinearSnapHelper().attachToRecyclerView(this)
-            val recyclerViewAdapter = RecyclerViewAdapter();
+            val recyclerViewAdapter = RecyclerViewAdapter()
             recyclerViewAdapter.items = value
             this.adapter = recyclerViewAdapter
 
