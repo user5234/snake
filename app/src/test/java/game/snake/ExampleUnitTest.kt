@@ -2,9 +2,6 @@ package game.snake
 
 import org.junit.Test
 
-import org.junit.Assert.*
-import kotlin.reflect.KClass
-
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
