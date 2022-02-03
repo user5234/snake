@@ -83,6 +83,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        throw IllegalArgumentException("")
+        throw IllegalArgumentException("only pass child classes of ${GameView.GameOption::class} to this method")
     }
 }

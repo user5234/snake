@@ -25,7 +25,7 @@ class GameView : View {
     /**
      * interface that represents an option / parameter for a new game
      */
-    interface GameOption
+    sealed interface GameOption
 
     enum class MapSize : GameOption {
         SMALL {

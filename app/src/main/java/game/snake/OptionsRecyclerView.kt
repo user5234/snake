@@ -51,13 +51,8 @@ class OptionsRecyclerView : RecyclerView {
 
     private fun scrollToInitOptions() {
         for (i in items.indices) {
-            when (val option = items[i].option) {
-                is GameView.MapSize ->
-                    if (option == MainActivity.instance.getLast<GameView.MapSize>()) smoothScrollToPosition(i)
-                is GameView.Speed ->
-                    if (option == MainActivity.instance.getLast<GameView.Speed>()) smoothScrollToPosition(i)
-                is GameView.ApplesAmount ->
-                    if (option == MainActivity.instance.getLast<GameView.ApplesAmount>()) smoothScrollToPosition(i)
+            GameView.GameOption::class.sealedSubclasses.forEach {
+                if (items[i].option == MainActivity.instance.getLast(it)) smoothScrollToPosition(i)
             }
         }
     }
