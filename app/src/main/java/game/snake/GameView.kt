@@ -211,7 +211,6 @@ class GameView : View {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         if (canvas != null) {
-            println(frameNumber)
             canvas.drawBitmap(bgBitmap, 0F, 0F, null)
             snake.draw(canvas, frameNumber)
             apples.draw(canvas)

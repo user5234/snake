@@ -33,9 +33,9 @@ class ThemeButton : View {
 
     constructor(ctx: Context) : super(ctx)
 
-    constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) { init(attrs, 0) }
+    constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) { addStyles(attrs, 0) }
 
-    constructor(ctx: Context, attrs: AttributeSet, defStyleAttr: Int) : super(ctx, attrs, defStyleAttr) { init(attrs, defStyleAttr) }
+    constructor(ctx: Context, attrs: AttributeSet, defStyleAttr: Int) : super(ctx, attrs, defStyleAttr) { addStyles(attrs, defStyleAttr) }
 
     init {
         doOnLayout {
@@ -60,7 +60,7 @@ class ThemeButton : View {
         }
     }
 
-    private fun init(attrs: AttributeSet, defStyleAttr: Int) {
+    private fun addStyles(attrs: AttributeSet, defStyleAttr: Int) {
         val ta = context.obtainStyledAttributes(attrs, R.styleable.ThemeButton, defStyleAttr, 0)
         val n = ta.indexCount
         for (i in 0 until n) {

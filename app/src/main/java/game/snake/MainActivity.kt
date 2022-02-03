@@ -2,7 +2,6 @@ package game.snake
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import java.lang.IllegalArgumentException
 import kotlin.reflect.KClass
 
 private const val PREFERENCES = "app_preferences"

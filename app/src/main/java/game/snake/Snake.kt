@@ -493,48 +493,38 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
 
     private fun rotateHead(direction: Direction?, frameNumber: Int) {
         if (direction == null) return
+        val toDegrees: Float
         when (direction) {
             Direction.LEFT -> {
-                if (this.direction == Direction.UP) {
-                    NORMAL_HEAD.fromDegrees = 360F
-                } else {
-                    NORMAL_HEAD.fromDegrees = 180F
-                }
-                NORMAL_HEAD.toDegrees = 270F
+                toDegrees = 270F
+                NORMAL_HEAD.toDegrees = toDegrees
+                if (this.direction == Direction.UP) NORMAL_HEAD.fromDegrees = toDegrees + 90
+                else NORMAL_HEAD.fromDegrees = toDegrees - 90
             }
             Direction.UP -> {
-                if (this.direction == Direction.LEFT) {
-                    NORMAL_HEAD.fromDegrees = -90F
-                } else {
-                    NORMAL_HEAD.fromDegrees = 90F
-                }
-                NORMAL_HEAD.toDegrees = 0F
+                toDegrees = 0F
+                NORMAL_HEAD.toDegrees = toDegrees
+                if (this.direction == Direction.RIGHT) NORMAL_HEAD.fromDegrees = toDegrees + 90
+                else NORMAL_HEAD.fromDegrees = toDegrees - 90
             }
             Direction.RIGHT -> {
-                if (this.direction == Direction.UP) {
-                    NORMAL_HEAD.fromDegrees = 0F
-                } else {
-                    NORMAL_HEAD.fromDegrees = 180F
-                }
-                NORMAL_HEAD.toDegrees = 90F
+                toDegrees = 90F
+                NORMAL_HEAD.toDegrees = toDegrees
+                if (this.direction == Direction.DOWN) NORMAL_HEAD.fromDegrees = toDegrees + 90
+                else NORMAL_HEAD.fromDegrees = toDegrees - 90
             }
             Direction.DOWN -> {
-                if (this.direction == Direction.LEFT) {
-                    NORMAL_HEAD.fromDegrees = 270F
-                } else {
-                    NORMAL_HEAD.fromDegrees = 90F
-                }
-                NORMAL_HEAD.toDegrees = 180F
+                toDegrees = 180F
+                NORMAL_HEAD.toDegrees = toDegrees
+                if (this.direction == Direction.LEFT) NORMAL_HEAD.fromDegrees = toDegrees + 90
+                else NORMAL_HEAD.fromDegrees = toDegrees - 90
             }
         }
         val anim = ValueAnimator.ofInt(0, 10000)
         anim.interpolator = LinearInterpolator()
         anim.repeatCount = 0
-        anim.duration =
-            (moveTime - (moveTime * frameNumber.toFloat() / gameView.framesPerMove)).toLong()
-        anim.addUpdateListener {
-            NORMAL_HEAD.level = it.animatedValue as Int
-        }
+        anim.duration = (moveTime - (moveTime * frameNumber.toFloat() / gameView.framesPerMove)).toLong()
+        anim.addUpdateListener { NORMAL_HEAD.level = it.animatedValue as Int }
         anim.start()
     }
 
