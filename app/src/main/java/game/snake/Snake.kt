@@ -17,9 +17,16 @@ private const val HEAD_COLOR = Color.BLACK
 private const val TAIL_COLOR = Color.WHITE
 
 private val KNOCKED_OUT_GIF = Drawables.get(R.drawable.knocked_out_gif) as AnimationDrawable
-private val NORMAL_HEAD = Drawables.get(R.drawable.snake_head_normal_rotate) as RotateDrawable
-private val ATE_APPLE_HEAD = Drawables.get(R.drawable.snake_head_on_apple_rotate) as RotateDrawable
-private val FAILED_HEAD = Drawables.get(R.drawable.snake_head_on_fail_rotate) as RotateDrawable
+
+private const val NORMAL_HEAD = 0
+private const val ATE_APPLE_HEAD = 1
+private const val FAILED_HEAD = 2
+
+private val headDrawablesList = listOf(
+    Drawables.get(R.drawable.snake_head_normal_rotate) as RotateDrawable,
+    Drawables.get(R.drawable.snake_head_on_apple_rotate) as RotateDrawable,
+    Drawables.get(R.drawable.snake_head_on_fail_rotate) as RotateDrawable
+)
 
 
 class Snake(private val gameView: GameView, private val apples: Apples) {
@@ -53,6 +60,7 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
     private val sweepGradients = mutableListOf<Paint>()
     private val linearGradients = mutableListOf<Paint>()
 
+    private var headDrawable = headDrawablesList[NORMAL_HEAD]
     private var direction = Direction.RIGHT
     private var prevDirection = Direction.RIGHT // only used to rotate the head after failing
     private var bodyParts = 0
@@ -89,15 +97,14 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
         bodyParts = 4
         textTime = 0
         ateApple = true
-        NORMAL_HEAD.fromDegrees = 90F
-        NORMAL_HEAD.toDegrees = 90F
-        NORMAL_HEAD.level = 1
+        headDrawable = headDrawablesList[NORMAL_HEAD]
+        headDrawablesList.forEach {
+            it.fromDegrees = 90F
+            it.toDegrees = 90F
+            it.level = 1
+        }
         //snake bitmap, shader with the background bitmap and canvas
-        bgPaint.shader = (BitmapShader(
-            Background.get(gameView.width, gameView.height, u),
-            Shader.TileMode.CLAMP,
-            Shader.TileMode.CLAMP
-        ))
+        bgPaint.shader = (BitmapShader(Background.get(gameView.width, gameView.height, u), Shader.TileMode.CLAMP, Shader.TileMode.CLAMP))
         //set initial position
         val initX = (gameView.width / 3) / u * u + u
         val initY = (gameView.height / 2) / u * u
@@ -121,6 +128,7 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
     fun move() {
         ateApple = false
         textTime--
+        if (textTime <= 0) headDrawable = headDrawablesList[NORMAL_HEAD]
         val nonEmptyPoints = mutableListOf<Point>()
         //always have 2 'invisible' body parts behind
         for (i in bodyParts + 1 downTo 1) {
@@ -144,10 +152,11 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
         gameView.emptySquares.removeAll(nonEmptyPoints)
         //check if the snake collided with itself or the walls
         if (failed()) {
-            //call gameOver and return right away so that changeAppleLocation wont cause a game over event as a win,
-            //and so that addTurns function is never called so the drawing of the snake after fail
-            //will stay in place
+            headDrawable = headDrawablesList[FAILED_HEAD]
+            //posting because of the animators in rotateHead()
             gameView.post { setDirection(prevDirection, 0) }
+            //call gameOver and return right away so that changeAppleLocation wont cause a game over event as a win,
+            //and so that addTurns function is never called so the drawing of the snake after fail will stay in place
             gameView.gameOver(false)
             return
         }
@@ -157,11 +166,12 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
         //check if the snake head is on an apple and if so, change the apples location and adds to body parts
         for (p: Point in applePositions)
             if (p.x == x[0] && p.y == y[0]) {
-                apples.changeAppleLocation(x[0], y[0])
                 ateApple = true
                 bodyParts++
                 textTime = 6
+                headDrawable = headDrawablesList[ATE_APPLE_HEAD]
                 gameView.incrementScore()
+                apples.changeAppleLocation(x[0], y[0])
                 x.add(0); y.add(0)
             }
         //add the turns to the turns list after moving
@@ -193,7 +203,6 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
         var distance = frameNumber * distancePerFrame
         var degrees = frameNumber * degreesPerFrame
         var width = tailWidth //grows up to head width at the end of the drawing cycle
-
         //
         //----------------------------------------------------------------------helper methods to reduce duplicate code!------------------------------------------------
         fun pathRight(i: Int) {
@@ -281,8 +290,8 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
                             imgDstRect.set(turns[i].x, (turns[i].y + u - headDistance).toInt(), turns[i].x + u, (turns[i].y + 2 * u - headDistance).toInt())
                         }
                     }
-                    NORMAL_HEAD.bounds = imgDstRect
-                    NORMAL_HEAD.draw(canvas)
+                    headDrawable.bounds = imgDstRect
+                    headDrawable.draw(canvas)
                 }
                 //--------------------------------------------------------------------------------tail------------------------------------------------------------------
                 0 -> {
@@ -491,43 +500,41 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
         turnsAmount = index
     }
 
-    private fun rotateHead(direction: Direction?, frameNumber: Int) {
-        if (direction == null) return
+    private fun rotateHead(direction: Direction, frameNumber: Int) {
         val toDegrees: Float
         when (direction) {
             Direction.LEFT -> {
                 toDegrees = 270F
-                NORMAL_HEAD.toDegrees = toDegrees
-                if (this.direction == Direction.UP) NORMAL_HEAD.fromDegrees = toDegrees + 90
-                else NORMAL_HEAD.fromDegrees = toDegrees - 90
+                headDrawablesList.forEach { it.toDegrees = toDegrees }
+                if (this.direction == Direction.UP) headDrawablesList.forEach { it.fromDegrees = toDegrees + 90 }
+                else headDrawablesList.forEach { it.fromDegrees = toDegrees - 90 }
             }
             Direction.UP -> {
                 toDegrees = 0F
-                NORMAL_HEAD.toDegrees = toDegrees
-                if (this.direction == Direction.RIGHT) NORMAL_HEAD.fromDegrees = toDegrees + 90
-                else NORMAL_HEAD.fromDegrees = toDegrees - 90
+                headDrawablesList.forEach { it.toDegrees = toDegrees }
+                if (this.direction == Direction.RIGHT) headDrawablesList.forEach { it.fromDegrees = toDegrees + 90 }
+                else headDrawablesList.forEach { it.fromDegrees = toDegrees - 90 }
             }
             Direction.RIGHT -> {
                 toDegrees = 90F
-                NORMAL_HEAD.toDegrees = toDegrees
-                if (this.direction == Direction.DOWN) NORMAL_HEAD.fromDegrees = toDegrees + 90
-                else NORMAL_HEAD.fromDegrees = toDegrees - 90
+                headDrawablesList.forEach { it.toDegrees = toDegrees }
+                if (this.direction == Direction.DOWN) headDrawablesList.forEach { it.fromDegrees = toDegrees + 90 }
+                else headDrawablesList.forEach { it.fromDegrees = toDegrees - 90 }
             }
             Direction.DOWN -> {
                 toDegrees = 180F
-                NORMAL_HEAD.toDegrees = toDegrees
-                if (this.direction == Direction.LEFT) NORMAL_HEAD.fromDegrees = toDegrees + 90
-                else NORMAL_HEAD.fromDegrees = toDegrees - 90
+                headDrawablesList.forEach { it.toDegrees = toDegrees }
+                if (this.direction == Direction.LEFT) headDrawablesList.forEach { it.fromDegrees = toDegrees + 90 }
+                else headDrawablesList.forEach { it.fromDegrees = toDegrees - 90 }
             }
         }
         val anim = ValueAnimator.ofInt(0, 10000)
         anim.interpolator = LinearInterpolator()
         anim.repeatCount = 0
         anim.duration = (moveTime - (moveTime * frameNumber.toFloat() / gameView.framesPerMove)).toLong()
-        anim.addUpdateListener { NORMAL_HEAD.level = it.animatedValue as Int }
+        anim.addUpdateListener { aul -> headDrawablesList.forEach { it.level = aul.animatedValue as Int } }
         anim.start()
     }
-
 
     /**
      * big brain time!
@@ -562,7 +569,6 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
         //these are the colors of the tail gradient
         val firstGradStartColor = Color.rgb(red, green, blue)
         var firstGradEndColor = 0
-
         //----------------------------------------------------------------------helper methods to reduce duplicate code!------------------------------------------------
         fun addLinearGradient(i: Int, gradient: LinearGradient) {
             if (linearGradients.size > i) {

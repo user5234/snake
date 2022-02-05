@@ -141,10 +141,11 @@ class GameView : View {
         this.won = won
         this.gameOver = true
         running = false
-        //adding the play screen
-        postDelayed({ playScreen.addScreen(score, MainActivity.instance.getHighScore()) }, 1000)
+        println("game over, $score")
         //saving the high score if higher than the previous
         if (score > MainActivity.instance.getHighScore()) MainActivity.instance.saveHighScore(score)
+        //adding the play screen
+        postDelayed({ playScreen.addScreen(score, MainActivity.instance.getHighScore()) }, 1000)
         //if we won don't do the
         if (won) return
         frameNumber = framesPerMove
@@ -163,6 +164,7 @@ class GameView : View {
     fun incrementScore() {
         score++
         post { (parent as View).findViewById<TextView>(R.id.scoreText).text = "$score" }
+        println("inc, $score")
     }
 
     fun pause() { if (running) timer.cancel() }

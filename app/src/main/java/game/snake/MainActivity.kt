@@ -66,20 +66,14 @@ class MainActivity : AppCompatActivity() {
     fun <T : GameView.GameOption> getLast(t : KClass<T>) : T {
         val preferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE)
         when (t) {
-            GameView.MapSize::class -> {
-                enumValues<GameView.MapSize>().forEach {
-                    if (it.squaresAmount == preferences.getInt(SNAKE_LAST_MAP_SIZE, GameView.MapSize.NORMAL.squaresAmount)) return it as T
-                }
+            GameView.MapSize::class -> enumValues<GameView.MapSize>().forEach {
+                if (it.squaresAmount == preferences.getInt(SNAKE_LAST_MAP_SIZE, GameView.MapSize.NORMAL.squaresAmount)) return it as T
             }
-            GameView.Speed::class -> {
-                enumValues<GameView.Speed>().forEach {
-                    if (it.moveTime == preferences.getLong(SNAKE_LAST_SPEED, GameView.Speed.NORMAL.moveTime)) return it as T
-                }
+            GameView.Speed::class -> enumValues<GameView.Speed>().forEach {
+                if (it.moveTime == preferences.getLong(SNAKE_LAST_SPEED, GameView.Speed.NORMAL.moveTime)) return it as T
             }
-            GameView.ApplesAmount::class -> {
-                enumValues<GameView.ApplesAmount>().forEach {
-                    if (it.amount == preferences.getInt(SNAKE_LAST_APPLES_AMOUNT, GameView.ApplesAmount.ONE.amount)) return it as T
-                }
+            GameView.ApplesAmount::class -> enumValues<GameView.ApplesAmount>().forEach {
+                if (it.amount == preferences.getInt(SNAKE_LAST_APPLES_AMOUNT, GameView.ApplesAmount.ONE.amount)) return it as T
             }
         }
         throw IllegalArgumentException("only pass child classes of ${GameView.GameOption::class} to this method")
