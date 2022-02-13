@@ -83,7 +83,7 @@ class GameView : View {
     var emptySquares = mutableListOf<Point>(); private set
 
     private val apples = Apples(this)
-    private val snake = Snake(this, apples)
+    private val snake = Snake(this)
 
     private var timer = Timer()
     private var frameNumber = 0
@@ -141,12 +141,11 @@ class GameView : View {
         this.won = won
         this.gameOver = true
         running = false
-        println("game over, $score")
         //saving the high score if higher than the previous
         if (score > MainActivity.instance.getHighScore()) MainActivity.instance.saveHighScore(score)
         //adding the play screen
-        postDelayed({ playScreen.addScreen(score, MainActivity.instance.getHighScore()) }, 1000)
-        //if we won don't do the
+        MainActivity.uiHandler.postDelayed({ playScreen.addScreen(score, MainActivity.instance.getHighScore()) }, 1000)
+        //if we won don't do the failing animation (moving backwards)
         if (won) return
         frameNumber = framesPerMove
         timer = Timer()
@@ -163,8 +162,7 @@ class GameView : View {
 
     fun incrementScore() {
         score++
-        post { (parent as View).findViewById<TextView>(R.id.scoreText).text = "$score" }
-        println("inc, $score")
+        MainActivity.uiHandler.post { (parent as View).findViewById<TextView>(R.id.scoreText).text = "$score" }
     }
 
     fun pause() { if (running) timer.cancel() }
@@ -182,13 +180,24 @@ class GameView : View {
             val widthInSquares = width / unitSize - 2
             Point((i % widthInSquares + 1) * unitSize, i / widthInSquares * unitSize)
         }
+        //cancel the timer from the previous game
         timer.cancel()
+        //initialize the basic variables
         gameOver = false
         running = false
         frameNumber = 0
         score = 0
+        //set the high score and score text
+        val ma = MainActivity.instance
+        ma.findViewById<TextView>(R.id.highScoreText).text = "${ma.getHighScore()}"
+        ma.findViewById<TextView>(R.id.scoreText).text = "$score"
+        //set the score and high score image and text positions
+        ma.findViewById<View>(R.id.scoreLayout).x = unitSize.toFloat()
+        val highScoreLayout = ma.findViewById<View>(R.id.highScoreLayout)
+        highScoreLayout.x = width.toFloat() - unitSize - width % unitSize - highScoreLayout.width
+        //initialize the apples before the snake
         apples.initialize(applesAmount)
-        snake.initialize(moveTime)
+        snake.initialize(moveTime, apples)
         postInvalidate()
     }
 

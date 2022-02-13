@@ -1,6 +1,5 @@
 package game.snake
 
-import android.app.Application
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes

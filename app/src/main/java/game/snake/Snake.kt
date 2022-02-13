@@ -3,8 +3,11 @@ package game.snake
 import android.animation.ValueAnimator
 import android.graphics.*
 import android.graphics.drawable.AnimationDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.RotateDrawable
+import android.os.SystemClock
 import android.view.animation.LinearInterpolator
+import androidx.core.content.res.ResourcesCompat
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.min
@@ -16,20 +19,17 @@ import kotlin.math.sin
 private const val HEAD_COLOR = Color.BLACK
 private const val TAIL_COLOR = Color.WHITE
 
-private val KNOCKED_OUT_GIF = Drawables.get(R.drawable.knocked_out_gif) as AnimationDrawable
+//text to draw after eating an apple
+private const val EAT_TEXT = "yum!"
+//the number of moves that the text and the ate apple head drawable will be shown
+private const val EAT_TIME = 6
 
+//basically indices for the head drawable list with nice names
 private const val NORMAL_HEAD = 0
 private const val ATE_APPLE_HEAD = 1
 private const val FAILED_HEAD = 2
 
-private val headDrawablesList = listOf(
-    Drawables.get(R.drawable.snake_head_normal_rotate) as RotateDrawable,
-    Drawables.get(R.drawable.snake_head_on_apple_rotate) as RotateDrawable,
-    Drawables.get(R.drawable.snake_head_on_fail_rotate) as RotateDrawable
-)
-
-
-class Snake(private val gameView: GameView, private val apples: Apples) {
+class Snake(private val gameView: GameView) {
 
     enum class Direction {
         LEFT {
@@ -52,11 +52,19 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
         abstract val opposite: Direction
     }
 
+    private val headDrawablesList = listOf(
+        Drawables.get(R.drawable.snake_head_normal_rotate) as RotateDrawable,
+        Drawables.get(R.drawable.snake_head_on_apple_rotate) as RotateDrawable,
+        Drawables.get(R.drawable.snake_head_on_fail_rotate) as RotateDrawable
+    )
+    private val knockedOutGif = Drawables.get(R.drawable.knocked_out_gif) as AnimationDrawable
+
     private val x = mutableListOf<Int>()
     private val y = mutableListOf<Int>()
     private val turns = mutableListOf<Point>()
     private val path = Path()
     private val bgPaint = Paint()
+    private val textPaint = Paint()
     private val sweepGradients = mutableListOf<Paint>()
     private val linearGradients = mutableListOf<Paint>()
 
@@ -65,12 +73,14 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
     private var prevDirection = Direction.RIGHT // only used to rotate the head after failing
     private var bodyParts = 0
     private var turnsAmount = 0
-    private var textTime = 0
+    private var movesSinceAte = 0
     private var moveTime = 0L
     private var ateApple = true
     private var u = gameView.unitSize
     private var distancePerFrame = 0F
     private var degreesPerFrame = 0F
+
+    private lateinit var apples: Apples
 
     /**
      * initializes all the snakes parameters in order to prepare it for
@@ -79,7 +89,8 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
      * this method should always be called at the start of a new game,
      * after initializing all the variables needed in the GameView
      */
-    fun initialize(moveTime : Long) {
+    fun initialize(moveTime : Long, apples: Apples) {
+        this.apples = apples
         //set the size variables to match the current Map Size
         u = gameView.unitSize
         distancePerFrame = u.toFloat() / gameView.framesPerMove
@@ -95,7 +106,7 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
         direction = Direction.RIGHT
         prevDirection = Direction.RIGHT
         bodyParts = 4
-        textTime = 0
+        movesSinceAte = EAT_TIME
         ateApple = true
         headDrawable = headDrawablesList[NORMAL_HEAD]
         headDrawablesList.forEach {
@@ -103,8 +114,11 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
             it.toDegrees = 90F
             it.level = 1
         }
-        //snake bitmap, shader with the background bitmap and canvas
+        //shader with the background bitmap and text paint
         bgPaint.shader = (BitmapShader(Background.get(gameView.width, gameView.height, u), Shader.TileMode.CLAMP, Shader.TileMode.CLAMP))
+        textPaint.color = Color.WHITE
+        textPaint.typeface = ResourcesCompat.getFont(gameView.context, R.font.arcade_font)
+        textPaint.textSize = u / 2F
         //set initial position
         val initX = (gameView.width / 3) / u * u + u
         val initY = (gameView.height / 2) / u * u
@@ -127,8 +141,8 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
      */
     fun move() {
         ateApple = false
-        textTime--
-        if (textTime <= 0) headDrawable = headDrawablesList[NORMAL_HEAD]
+        movesSinceAte++
+        if (movesSinceAte == EAT_TIME) headDrawable = headDrawablesList[NORMAL_HEAD]
         val nonEmptyPoints = mutableListOf<Point>()
         //always have 2 'invisible' body parts behind
         for (i in bodyParts + 1 downTo 1) {
@@ -153,8 +167,16 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
         //check if the snake collided with itself or the walls
         if (failed()) {
             headDrawable = headDrawablesList[FAILED_HEAD]
+            movesSinceAte = EAT_TIME
+            knockedOutGif.callback = object : Drawable.Callback {
+                override fun invalidateDrawable(who: Drawable) {}
+                override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) { gameView.postDelayed(what, `when` - SystemClock.uptimeMillis()); }
+                override fun unscheduleDrawable(who: Drawable, what: Runnable) { gameView.removeCallbacks(what) }
+            }
+            knockedOutGif.setVisible(true, true)
+            knockedOutGif.start()
             //posting because of the animators in rotateHead()
-            gameView.post { setDirection(prevDirection, 0) }
+            MainActivity.uiHandler.post { setDirection(prevDirection, 0) }
             //call gameOver and return right away so that changeAppleLocation wont cause a game over event as a win,
             //and so that addTurns function is never called so the drawing of the snake after fail will stay in place
             gameView.gameOver(false)
@@ -168,7 +190,7 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
             if (p.x == x[0] && p.y == y[0]) {
                 ateApple = true
                 bodyParts++
-                textTime = 6
+                movesSinceAte = 0
                 headDrawable = headDrawablesList[ATE_APPLE_HEAD]
                 gameView.incrementScore()
                 apples.changeAppleLocation(x[0], y[0])
@@ -193,8 +215,8 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
      */
     fun draw(canvas: Canvas, frameNumber: Int) {
         if (frameNumber % 2 == 0) addGradients(frameNumber)
-        //bounds for the head drawable
-        val imgDstRect = Rect()
+        //bottom left point of the text
+        val textDstPoint = PointF()
         //width at the head
         val headWidth = 3 * u / 4F
         //width at the tail (minimum is headWidth - 6u/15, at 60 or more body parts)
@@ -271,26 +293,35 @@ class Snake(private val gameView: GameView, private val apples: Apples) {
                         //going right
                         if (turns[i - 1].x < turns[i].x) {
                             canvas.drawRect(turns[i].x.toFloat(), turns[i].y + (u - width) / 2, turns[i].x + distance, turns[i].y + u - (u - width) / 2, linearGradients[turnsAmount - 2])
-                            imgDstRect.set((turns[i].x - u + headDistance).toInt(), turns[i].y, (turns[i].x + headDistance).toInt(), turns[i].y + u)
+                            headDrawable.setBounds((turns[i].x - u + headDistance).toInt(), turns[i].y, (turns[i].x + headDistance).toInt(), turns[i].y + u)
+                            textDstPoint.set(turns[i].x + headDistance - u, turns[i].y.toFloat())
                         }
                         //going left
                         else {
                             canvas.drawRect(turns[i].x + u - distance, turns[i].y + (u - width) / 2, turns[i].x.toFloat() + u, turns[i].y + u - (u - width) / 2, linearGradients[turnsAmount - 2])
-                            imgDstRect.set((turns[i].x + u - headDistance).toInt(), turns[i].y, (turns[i].x + 2 * u - headDistance).toInt(), turns[i].y + u)
+                            headDrawable.setBounds((turns[i].x + u - headDistance).toInt(), turns[i].y, (turns[i].x + 2 * u - headDistance).toInt(), turns[i].y + u)
+                            textDstPoint.set(turns[i].x + u - headDistance, turns[i].y.toFloat())
                         }
                     } else {
                         //going down
                         if (turns[i - 1].y < turns[i].y) {
                             canvas.drawRect(turns[i].x + (u - width) / 2, turns[i].y.toFloat(), turns[i].x + u - (u - width) / 2, turns[i].y + distance, linearGradients[turnsAmount - 2])
-                            imgDstRect.set(turns[i].x, (turns[i].y - u + headDistance).toInt(), turns[i].x + u, (turns[i].y + headDistance).toInt())
+                            headDrawable.setBounds(turns[i].x, (turns[i].y - u + headDistance).toInt(), turns[i].x + u, (turns[i].y + headDistance).toInt())
+                            textDstPoint.set(turns[i].x.toFloat(), turns[i].y + headDistance - u)
                         }
                         //going up
                         else {
                             canvas.drawRect(turns[i].x + (u - width) / 2, turns[i].y + u - distance, turns[i].x + u - (u - width) / 2, turns[i].y.toFloat() + u, linearGradients[turnsAmount - 2])
-                            imgDstRect.set(turns[i].x, (turns[i].y + u - headDistance).toInt(), turns[i].x + u, (turns[i].y + 2 * u - headDistance).toInt())
+                            headDrawable.setBounds(turns[i].x, (turns[i].y + u - headDistance).toInt(), turns[i].x + u, (turns[i].y + 2 * u - headDistance).toInt())
+                            textDstPoint.set(turns[i].x.toFloat(), turns[i].y + u - headDistance)
                         }
                     }
-                    headDrawable.bounds = imgDstRect
+                    if (movesSinceAte < EAT_TIME)
+                        canvas.drawText(EAT_TEXT, textDstPoint.x, textDstPoint.y, textPaint)
+                    if (headDrawable == headDrawablesList[FAILED_HEAD]) {
+                        knockedOutGif.setBounds(textDstPoint.x.toInt(), (textDstPoint.y - u / 2F).toInt(), textDstPoint.x.toInt() + u, (textDstPoint.y + u / 2F).toInt())
+                        knockedOutGif.draw(canvas)
+                    }
                     headDrawable.draw(canvas)
                 }
                 //--------------------------------------------------------------------------------tail------------------------------------------------------------------

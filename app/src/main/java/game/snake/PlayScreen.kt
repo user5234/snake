@@ -78,7 +78,7 @@ class PlayScreen : ConstraintLayout {
     }
 
     private fun removeScreen() {
-        post {
+        MainActivity.uiHandler.post {
             val alphaAnimation = AlphaAnimation(1F, 0F)
             alphaAnimation.duration = 500
             alphaAnimation.startOffset = 300

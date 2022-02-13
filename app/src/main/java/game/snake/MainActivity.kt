@@ -1,6 +1,8 @@
 package game.snake
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.reflect.KClass
 
@@ -10,16 +12,19 @@ private const val SNAKE_LAST_SPEED = "snake_speed"
 private const val SNAKE_LAST_APPLES_AMOUNT = "snake_apples_amount"
 private const val SNAKE_HIGH_SCORE = "snake_high_score"
 
+
 class MainActivity : AppCompatActivity() {
 
     companion object {
         lateinit var instance: MainActivity private set
+        lateinit var uiHandler: Handler
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         instance = this
+        uiHandler = Handler(Looper.getMainLooper())
         setContentView(R.layout.activity_main)
         layoutInflater.inflate(R.layout.play_screen, findViewById(R.id.mainLayout))
     }
@@ -39,9 +44,9 @@ class MainActivity : AppCompatActivity() {
         val editor = preferences.edit()
         for (option in options) {
             when (option) {
-                is GameView.MapSize -> { editor.putInt(SNAKE_LAST_MAP_SIZE, option.squaresAmount) }
-                is GameView.Speed -> { editor.putLong(SNAKE_LAST_SPEED, option.moveTime) }
-                is GameView.ApplesAmount -> { editor.putInt(SNAKE_LAST_APPLES_AMOUNT, option.amount) }
+                is GameView.MapSize -> editor.putInt(SNAKE_LAST_MAP_SIZE, option.squaresAmount)
+                is GameView.Speed -> editor.putLong(SNAKE_LAST_SPEED, option.moveTime)
+                is GameView.ApplesAmount -> editor.putInt(SNAKE_LAST_APPLES_AMOUNT, option.amount)
             }
         }
         editor.apply()
@@ -76,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                 if (it.amount == preferences.getInt(SNAKE_LAST_APPLES_AMOUNT, GameView.ApplesAmount.ONE.amount)) return it as T
             }
         }
-        throw IllegalArgumentException("only pass child classes of ${GameView.GameOption::class} to this method")
+        throw IllegalArgumentException("only pass sealed subClasses of ${GameView.GameOption::class} to this method:\n" +
+                "${GameView.GameOption::class.sealedSubclasses}")
     }
 }
