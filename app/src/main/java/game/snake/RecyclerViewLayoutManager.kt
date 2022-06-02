@@ -1,11 +1,14 @@
 package game.snake
 
 import android.content.Context
+import android.media.MediaPlayer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.abs
 
 class RecyclerViewLayoutManager(ctx : Context, private val recyclerView: RecyclerView) : LinearLayoutManager(ctx) {
+
+    private var mp: MediaPlayer = MediaPlayer.create(MainActivity.instance, R.raw.recycler_view_tick)
 
     override fun onScrollStateChanged(state: Int) {
         super.onScrollStateChanged(state)
@@ -40,8 +43,16 @@ class RecyclerViewLayoutManager(ctx : Context, private val recyclerView: Recycle
         val mid = width / 2F
         for (i in 0 until childCount) {
             val child = getChildAt(i)
-            if (child != null && child.x > mid - child.width && child.x < mid)
+            if (child != null && child.x > mid - child.width && child.x < mid) {
                 child.alpha = 1F
+//                //play sound
+//                if (mp.isPlaying) {
+//                    mp.stop()
+//                    mp.release()
+//                    mp = MediaPlayer.create(MainActivity.instance, R.raw.recycler_view_tick)
+//                }
+//                mp.start()
+            }
             else
                 child?.alpha = 0.6F
         }

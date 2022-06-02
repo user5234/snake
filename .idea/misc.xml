@@ -3,16 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable-v24/game_donut_animation.xml" value="0.5255" />
         <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable-v24/ic_1_donuts.xml" value="0.346875" />
         <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable-v24/ic_3_donuts.xml" value="0.5444444444444444" />
         <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable-v24/ic_5_donuts.xml" value="0.5444444444444444" />
         <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable-v24/ic_donut.xml" value="0.346875" />
         <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable-v24/ic_donut_animation.xml" value="0.346875" />
+        <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.5475" />
         <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable-v24/options_3_donuts.xml" value="0.5475" />
         <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable-v24/options_5_donuts.xml" value="0.5475" />
         <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable-v24/settings_icon_black.xml" value="0.529" />
         <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable-v24/settings_icon_white.xml" value="0.529" />
         <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.5475" />
+        <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable/ic_launcher_background.xml" value="0.5475" />
         <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable/knocked_out_gif.xml" value="0.5255" />
         <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable/snake_head_normal_rotate.xml" value="0.549074074074074" />
         <entry key="..\:/Users/galar/AndroidStudioProjects/Snake/app/src/main/res/drawable/snake_head_on_apple_rotate.xml" value="0.549074074074074" />

@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         lateinit var instance: MainActivity private set
-        lateinit var uiHandler: Handler
+        lateinit var uiHandler: Handler private set
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

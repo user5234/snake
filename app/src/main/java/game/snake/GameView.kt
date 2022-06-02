@@ -91,7 +91,7 @@ class GameView : View {
     private var applesAmount = 0
     private var moveTime = 0L
     private var changedDirection = false //to have only one direction change per move
-    private var gameOver = false
+    private var acceptTouchEvents = false
     private var running = false
     private var won = false
 
@@ -139,7 +139,7 @@ class GameView : View {
     fun gameOver(won: Boolean) {
         timer.cancel()
         this.won = won
-        this.gameOver = true
+        this.acceptTouchEvents = true
         running = false
         //saving the high score if higher than the previous
         if (score > MainActivity.instance.getHighScore()) MainActivity.instance.saveHighScore(score)
@@ -183,7 +183,7 @@ class GameView : View {
         //cancel the timer from the previous game
         timer.cancel()
         //initialize the basic variables
-        gameOver = false
+        acceptTouchEvents = false
         running = false
         frameNumber = 0
         score = 0
@@ -232,7 +232,7 @@ class GameView : View {
     private var touchY = 0F
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(e: MotionEvent?): Boolean {
-        if (e == null || gameOver)
+        if (e == null || acceptTouchEvents)
             return true
         fun changeDirection(direction : Snake.Direction) {
             if (!changedDirection && running && snake.setDirection(direction, frameNumber)) {
