@@ -9,7 +9,7 @@
         android:supportsRtl="false"
         android:theme="@style/Theme.Snake">
         <activity
-            android:screenOrientation="sensorPortrait"
+            android:screenOrientation="portrait"
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
