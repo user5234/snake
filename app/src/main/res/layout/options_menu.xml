@@ -40,10 +40,11 @@
         app:layout_constraintHeight_percent="0.2"
         app:layout_constraintTop_toBottomOf="@+id/speedRecycleView"/>
 
-    <game.snake.ThemeButton
+    <gal.libs.themebutton.ThemeButton
         android:id="@+id/applySettingsButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:fontFamily="@font/arcade_font"
         android:text="APPLY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1.5"

@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.animation.PathInterpolatorCompat
 import androidx.core.view.doOnLayout
+import gal.libs.themebutton.ThemeButton
 
 class PlayScreen : ConstraintLayout {
 
@@ -27,8 +28,8 @@ class PlayScreen : ConstraintLayout {
         doOnLayout {
             optionsMenu = LayoutInflater.from(context).inflate(R.layout.options_menu, findViewById(R.id.playView), false)
             //buttons in the play screen
-            findViewById<ThemeButton>(R.id.playButton).runnable = Runnable { removeScreen() }
-            findViewById<ThemeButton>(R.id.settingsButton).runnable = Runnable { addOptionsMenu() }
+            findViewById<ThemeButton>(R.id.playButton).action = { removeScreen() }
+            findViewById<ThemeButton>(R.id.settingsButton).action = { addOptionsMenu() }
             //recycler views in the options menu
             optionsMenu.findViewById<OptionsRecyclerView>(R.id.speedRecycleView).items = listOf(
                 OptionsRecyclerView.Item(R.drawable.options_speed_slow, GameView.Speed.SLOW),
@@ -46,7 +47,7 @@ class PlayScreen : ConstraintLayout {
                 OptionsRecyclerView.Item(R.drawable.options_5_donuts, GameView.ApplesAmount.FIVE)
             )
             //button in the options menu
-            optionsMenu.findViewById<ThemeButton>(R.id.applySettingsButton).runnable = Runnable { removeOptionsMenu() }
+            optionsMenu.findViewById<ThemeButton>(R.id.applySettingsButton).action = { removeOptionsMenu() }
             //high score
             findViewById<TextView>(R.id.playScreenHighScoreText).text = "${MainActivity.instance.getHighScore()}"
         }

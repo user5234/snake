@@ -79,7 +79,7 @@
             app:layout_constraintVertical_bias="0.6"
             app:layout_constraintWidth_percent="0.2" />
 
-        <game.snake.ThemeButton
+        <gal.libs.themebutton.ThemeButton
             android:id="@+id/settingsButton"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -95,11 +95,12 @@
             app:layout_constraintTop_toTopOf="@+id/guideline3"
             app:layout_constraintWidth_percent="0.2256" />
 
-        <game.snake.ThemeButton
+        <gal.libs.themebutton.ThemeButton
             android:id="@+id/playButton"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="START GAME"
+            android:fontFamily="@font/arcade_font"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="2.66"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"

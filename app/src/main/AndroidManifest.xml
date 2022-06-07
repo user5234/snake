@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="game.snake">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:allowBackup="true"
@@ -10,7 +9,7 @@
         android:supportsRtl="false"
         android:theme="@style/Theme.Snake">
         <activity
-            android:screenOrientation="portrait"
+            android:screenOrientation="sensorPortrait"
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
